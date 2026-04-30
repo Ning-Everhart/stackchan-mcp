@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert nagi avatar PNGs into LVGL RGB565 C arrays for StackChan firmware.
+"""Convert StackChan avatar PNGs into LVGL RGB565 C arrays for the firmware.
 
 Source (faces, Phase 1):
     ~/.stackchan/avatar/{idle,happy,thinking,sad,surprised,embarrassed}.png
@@ -51,7 +51,14 @@ EMOTIONS = ["idle", "happy", "thinking", "sad", "surprised", "embarrassed"]
 EYES = ["eyes_open", "eyes_half", "eyes_closed"]
 MOUTHS = ["mouth_closed", "mouth_half", "mouth_open", "mouth_e", "mouth_u"]
 DEFAULT_SRC = Path.home() / ".stackchan" / "avatar"
-DEFAULT_OUT = Path("/Users/shou/xiaozhi-esp32/main/boards/stackchan")
+# Default output: <repo root>/main/boards/stackchan/, resolved relative to
+# this script's location. Works for both the upstream xiaozhi-esp32 layout
+# (scripts/avatar_convert/...) and the public stackchan-mcp monorepo layout
+# (firmware/scripts/avatar_convert/...) as long as the firmware tree under
+# main/ is intact.
+DEFAULT_OUT = (
+    Path(__file__).resolve().parent.parent.parent / "main" / "boards" / "stackchan"
+)
 TARGET_W = 160
 TARGET_H = 120
 

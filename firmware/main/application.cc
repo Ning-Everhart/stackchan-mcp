@@ -477,7 +477,7 @@ void Application::InitializeProtocol() {
 
     display->SetStatus(Lang::Strings::LOADING_PROTOCOL);
 
-    // Force WebSocket protocol for nagi gateway (bypass OTA config)
+    // Force WebSocket protocol for the stackchan-mcp gateway (bypass OTA config)
     protocol_ = std::make_unique<WebsocketProtocol>();
 
     protocol_->OnConnected([this]() {
