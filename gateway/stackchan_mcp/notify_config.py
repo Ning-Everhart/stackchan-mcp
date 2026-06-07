@@ -36,11 +36,11 @@ class NotifyConfig:
 DEFAULT_MESSAGE_TEMPLATES: Final[dict[tuple[str, str], MessageTemplate]] = {
     ("touch", "tap"): MessageTemplate(
         action="head_pat",
-        template="(head pat)",
+        template="head was tapped",
     ),
     ("touch", "stroke"): MessageTemplate(
         action="head_stroke",
-        template="(head stroke, {duration_ms}ms)",
+        template="head was stroked for {duration_ms}ms",
     ),
 }
 

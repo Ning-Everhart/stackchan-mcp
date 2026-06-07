@@ -78,7 +78,7 @@ async def test_emit_stackchan_event_dispatches_selected_paths(
         channel_index = expected_notify_methods.index(stdio_server.CHANNEL_NOTIFICATION_METHOD)
         channel_params = notify_calls[channel_index][1]
         assert channel_params == {
-            "content": "(head pat)",
+            "content": DEFAULT_MESSAGE_TEMPLATES[("touch", "tap")].template,
             "meta": _expected_meta(),
         }
         assert channel_params["meta"]["action"] == "head_pat"
@@ -175,7 +175,10 @@ async def test_channels_meta_includes_ts_unix(monkeypatch):
     assert notify_calls == [
         (
             stdio_server.CHANNEL_NOTIFICATION_METHOD,
-            {"content": "(head pat)", "meta": _expected_meta()},
+            {
+                "content": DEFAULT_MESSAGE_TEMPLATES[("touch", "tap")].template,
+                "meta": _expected_meta(),
+            },
         )
     ]
     assert notify_calls[0][1]["meta"]["ts_unix"] == "1717000000.25"
@@ -204,7 +207,10 @@ async def test_mixed_legacy_and_channels(monkeypatch):
         (stdio_server.STACKCHAN_EVENT_METHOD, _expected_legacy_params()),
         (
             stdio_server.CHANNEL_NOTIFICATION_METHOD,
-            {"content": "(head pat)", "meta": _expected_meta()},
+            {
+                "content": DEFAULT_MESSAGE_TEMPLATES[("touch", "tap")].template,
+                "meta": _expected_meta(),
+            },
         ),
     ]
     legacy_params = notify_calls[0][1]

@@ -552,6 +552,43 @@ To enable Channels notifications:
    - **Hosts without a Channels receiver**: use the JSONL fallback (see
      below).
 
+#### Customizing event message wording
+
+Each delivered event carries a short message rendered from a template.
+The built-in defaults are phrased experientially — describing what the
+device felt rather than naming a mechanical event — so the consuming
+agent reads them as first-person narration:
+
+| Event | Default `action` | Default `template` |
+| --- | --- | --- |
+| `touch` / `tap` | `head_pat` | `head was tapped` |
+| `touch` / `stroke` | `head_stroke` | `head was stroked for {duration_ms}ms` |
+
+The `{duration_ms}` placeholder is substituted from the event payload;
+unknown placeholders are preserved verbatim.
+
+To override the wording, add a `messages:` block to
+`~/.config/stackchan-mcp/notify.yml`. Only the event types you list are
+overridden; everything else keeps the defaults above. For example, to
+use a more casual phrasing:
+
+```yaml
+# ~/.config/stackchan-mcp/notify.yml
+messages:
+  touch:
+    tap:
+      action: head_pat
+      template: "got a head pat"
+    stroke:
+      action: head_stroke
+      template: "head being stroked for {duration_ms}ms"
+```
+
+Both `action` and `template` are required for each overridden subtype.
+The `action` value is forwarded in the event metadata, so keep it stable
+if a downstream consumer keys off it. See `notify.example.yml` for the
+full annotated reference.
+
 To restore the previous always-on event behavior:
 
 ```yaml

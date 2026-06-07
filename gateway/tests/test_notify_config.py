@@ -43,11 +43,11 @@ def test_default_no_env_no_file_returns_all_off(monkeypatch, tmp_path):
     assert config.jsonl_path == DEFAULT_LOG_PATH
     assert config.messages[("touch", "tap")] == MessageTemplate(
         action="head_pat",
-        template="(head pat)",
+        template="head was tapped",
     )
     assert config.messages[("touch", "stroke")] == MessageTemplate(
         action="head_stroke",
-        template="(head stroke, {duration_ms}ms)",
+        template="head was stroked for {duration_ms}ms",
     )
 
 

@@ -6,11 +6,16 @@ channels:
 jsonl:
   enabled: false          # JSONL append for out-of-process host integration
   path: ~/.claude/stackchan-events.jsonl
+# messages: override the wording delivered for each physical event.
+# Omit this block entirely to keep the built-in experiential defaults
+# ("head was tapped" / "head was stroked for {duration_ms}ms").
+# The examples below customize the phrasing per event type; {duration_ms}
+# is substituted from the event payload.
 messages:
   touch:
     tap:
       action: head_pat
-      template: "(head pat)"
+      template: "got a head pat"
     stroke:
       action: head_stroke
-      template: "(head stroke, {duration_ms}ms)"
+      template: "head being stroked for {duration_ms}ms"

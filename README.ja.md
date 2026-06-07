@@ -502,6 +502,43 @@ Channels 通知を有効にするには:
    - **Channels 受け口を持たないホスト**: JSONL フォールバックを
      使ってください（下記参照）。
 
+#### イベントメッセージ文言のカスタマイズ
+
+届けられる各イベントには、テンプレートから生成される短いメッセージが
+付きます。組み込みのデフォルトは「機械的なイベント名」ではなく
+「デバイスが何を感じたか」を表す体験的な表現にしてあり、受信側の
+エージェントが一人称のナレーションとして読めるようになっています。
+
+| イベント | デフォルト `action` | デフォルト `template` |
+| --- | --- | --- |
+| `touch` / `tap` | `head_pat` | `head was tapped` |
+| `touch` / `stroke` | `head_stroke` | `head was stroked for {duration_ms}ms` |
+
+`{duration_ms}` プレースホルダはイベントの payload から置換されます。
+未知のプレースホルダはそのまま保持されます。
+
+文言を上書きするには、`~/.config/stackchan-mcp/notify.yml` に
+`messages:` ブロックを追加します。記載したイベント種別だけが上書き
+され、それ以外は上記のデフォルトのままです。たとえば、よりくだけた
+表現にする場合:
+
+```yaml
+# ~/.config/stackchan-mcp/notify.yml
+messages:
+  touch:
+    tap:
+      action: head_pat
+      template: "got a head pat"
+    stroke:
+      action: head_stroke
+      template: "head being stroked for {duration_ms}ms"
+```
+
+上書きする各 subtype には `action` と `template` の両方が必要です。
+`action` の値はイベントの metadata に転送されるため、下流の consumer
+がそれを key にしている場合は安定させておいてください。詳細な注釈付き
+リファレンスは `notify.example.yml` を参照してください。
+
 以前の常時有効だったイベント動作に戻す設定:
 
 ```yaml
