@@ -9,10 +9,12 @@
 #include <string.h>
 
 // Bosch BMI270 SDK (espressif/bmi270_sensor component, 0.1.1+).
+// 跟 Stackchan-HtSz 一致: bmi270_api.h (component 公开 API) + bmi2.h (Bosch
+// SDK 原生头, 含 BMI2_OK / BMI2_ACCEL / bmi2_sens_data 等). 不 include bmi2_defs.h,
+// bmi2.h 内部已 include 它了 (重复 include 在 GCC 也 OK, 但少一行少风险).
 extern "C" {
-#include "bmi270.h"
+#include "bmi270_api.h"
 #include "bmi2.h"
-#include "bmi2_defs.h"
 }
 
 #define TAG "MotionDetector"
