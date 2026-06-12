@@ -29,3 +29,18 @@ CONFIG_USB_HOST_CONTROL_TRANSFER_MAX_SIZE=1536
 
 # LVGL Graphics
 CONFIG_LV_USE_SNAPSHOT=y
+
+# ===== Ning-Everhart fork: stackchan-mcp 默认网关配置 (2026-06-12 锡) =====
+# 子域 stackchan.g1206.top 走 Cloudflare 橙云代理 → VPS:8765 (stackchan-mcp gateway)
+# 跟现有 mini app (control.g1206.top / home.g1206.top) 同套 Cloudflare Origin Rules。
+# token 不烧 firmware (默认空), 阿宁通过设备 UI 配 NVS websocket.token, binary 公开也安全。
+# FORCE 不开 — 允许 NVS 覆盖, 万一阿宁要本地直连 ws://192.168.x.x:8765 测试方便。
+# mDNS 备用: 同局域网 NVS+Kconfig 都空时, _stackchan-mcp._tcp.local. 自动发现 LAN 网关。
+CONFIG_DEFAULT_WEBSOCKET_URL="wss://stackchan.g1206.top/ws"
+CONFIG_DEFAULT_WEBSOCKET_FALLBACK_URL=""
+CONFIG_DEFAULT_WEBSOCKET_TOKEN=""
+CONFIG_FORCE_DEFAULT_WEBSOCKET_URL=n
+CONFIG_STACKCHAN_MDNS_DISCOVERY=y
+
+# K151 板型 (M5Stack StackChan kit, CoreS3 + Si12T 触摸 + PY32 IO Expander + SCS 舵机)
+CONFIG_BOARD_TYPE_STACKCHAN=y
