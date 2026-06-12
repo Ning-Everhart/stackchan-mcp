@@ -56,6 +56,12 @@ static inline bool ServoWritePosOk(int r) { return r > 0; }
 #include <string>
 #include <vector>
 
+// 2026-06-12 锡 (Ning-Everhart fork): BMI270 IMU 抱起/摇晃检测
+// 移植自 mo-hantang/Stackchan-HtSz (MIT). 在 InitializeMotionDetector() 启动 task,
+// 上报 Application::SendStackChanEvent("imu", subtype, duration_ms) 给 gateway.
+#include "motion_detector.h"
+#include "application.h"
+
 #define TAG "StackChanBoard"
 
 class Pmic : public Axp2101 {
@@ -681,6 +687,9 @@ private:
     bool si12t_ok_ = false;
     esp_timer_handle_t touch_poll_timer_ = nullptr;
     esp_timer_handle_t touch_revert_timer_ = nullptr;
+
+    // 2026-06-12 锡: BMI270 IMU 抱起/摇晃检测 (Ning-Everhart fork, 移植自 Stackchan-HtSz).
+    MotionDetector motion_detector_;
 
     // Touch detection state (single-thread access from the touch_poll_timer_
     // callback, which runs on the ESP_TIMER_TASK).
@@ -4004,6 +4013,24 @@ private:
         ESP_LOGI(TAG, "Si12T touch poll started (%d ms interval)", TOUCH_POLL_MS);
     }
 
+    // 2026-06-12 锡 (Ning-Everhart fork): BMI270 IMU 抱起/摇晃检测.
+    // 算法/参数移植自 Stackchan-HtSz, 详见 motion_detector.{h,cc}.
+    // 没 BMI270 不致命 (Initialize 返 false 时 motion 探测不工作, 其他功能不受影响).
+    static void OnMotionEvent(const char* subtype, uint64_t duration_ms, void* /*user_data*/) {
+        // 转调 Application::SendStackChanEvent 上报 MCP notification stackchan/event
+        // event_type="imu", subtype="lift"|"shake".  SendStackChanEvent 是线程安全的
+        // (Schedule 到 main task), 可以从 motion_task_ 调.
+        Application::GetInstance().SendStackChanEvent("imu", subtype, duration_ms);
+    }
+
+    void InitializeMotionDetector() {
+        ESP_LOGI(TAG, "Init BMI270 IMU (motion detector)");
+        bool ok = motion_detector_.Initialize(i2c_bus_, &StackChanBoard::OnMotionEvent, nullptr);
+        if (!ok) {
+            ESP_LOGW(TAG, "BMI270 not detected; lift/shake detection disabled (other features unaffected)");
+        }
+    }
+
     // Map a face name to AvatarSet's 0-indexed slot, or -1 if unknown.
     static int FaceNameToIndex(const char* face) {
         if (face == nullptr) return -1;
@@ -6307,6 +6334,7 @@ public:
         InitializeIOExpander();
         InitializeServo();
         InitializeSi12tTouch();
+        InitializeMotionDetector();  // 2026-06-12 锡: BMI270 抱起/摇晃检测
         I2cDetect();
         // Avatar auto-display disabled: WiFi config UI needs to be visible.
         // Avatar is shown on-demand via MCP set_avatar command.
