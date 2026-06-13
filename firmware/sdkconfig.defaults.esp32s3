@@ -36,7 +36,7 @@ CONFIG_LV_USE_SNAPSHOT=y
 # token 不烧 firmware (默认空), 阿宁通过设备 UI 配 NVS websocket.token, binary 公开也安全。
 # FORCE 不开 — 允许 NVS 覆盖, 万一阿宁要本地直连 ws://192.168.x.x:8765 测试方便。
 # mDNS 备用: 同局域网 NVS+Kconfig 都空时, _stackchan-mcp._tcp.local. 自动发现 LAN 网关。
-CONFIG_DEFAULT_WEBSOCKET_URL="wss://stackchan.g1206.top/ws"
+CONFIG_DEFAULT_WEBSOCKET_URL="wss://stackchan.g1206.top/ws/device"
 CONFIG_DEFAULT_WEBSOCKET_FALLBACK_URL=""
 CONFIG_DEFAULT_WEBSOCKET_TOKEN=""
 CONFIG_FORCE_DEFAULT_WEBSOCKET_URL=n
